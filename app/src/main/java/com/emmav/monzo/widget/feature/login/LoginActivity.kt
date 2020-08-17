@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.unit.dp
@@ -44,37 +45,39 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val loggedIn = { finish() }
+        val openMonzoApp = {
+            val monzoAppIntent = packageManager.getLaunchIntentForPackage("co.uk.getmondo")
+            if (monzoAppIntent != null) {
+                startActivity(monzoAppIntent)
+            } else {
+                Toast.makeText(
+                    this,
+                    R.string.login_requires_sca_monzo_not_installed,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        val openUrlAndFinish: (String, Color) -> Unit = { url, color ->
+            openUrl(url = url, toolbarColor = color)
+            finish()
+        }
+
         setContent {
             AppTheme {
                 Scaffold(topBar = {
                     TopAppBar(title = { Text(ContextAmbient.current.getString(R.string.login_activity_title)) })
                 }, bodyContent = {
                     val state by viewModel.state.observeAsState(LoginViewModel.State.Unknown())
-                    when (state) {
-                        is LoginViewModel.State.RequestMagicLink -> {
-                            (state as LoginViewModel.State.RequestMagicLink).url?.let {
-                                openUrl(url = it, toolbarColor = MaterialTheme.colors.primary)
-                                finish()
-                            }
-                        }
+                    (state as? LoginViewModel.State.RequestMagicLink)?.url?.let {
+                        openUrlAndFinish.invoke(it, MaterialTheme.colors.primary)
                     }
 
                     Content(
                         state = state,
                         loginClicked = { viewModel.onLoginClicked() },
-                        openMonzoApp = {
-                            val monzoAppIntent = packageManager.getLaunchIntentForPackage("co.uk.getmondo")
-                            if (monzoAppIntent != null) {
-                                startActivity(monzoAppIntent)
-                            } else {
-                                Toast.makeText(
-                                    ContextAmbient.current,
-                                    R.string.login_requires_sca_monzo_not_installed,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        },
-                        loggedIn = { finish() }
+                        openMonzoApp = openMonzoApp,
+                        loggedIn = loggedIn
                     )
                 })
             }

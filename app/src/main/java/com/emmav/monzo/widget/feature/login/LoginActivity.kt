@@ -57,32 +57,24 @@ class LoginActivity : AppCompatActivity() {
                                 finish()
                             }
                         }
-                        is LoginViewModel.State.RequiresStrongCustomerAuthentication -> {
-                            if ((state as LoginViewModel.State.RequiresStrongCustomerAuthentication).openMonzoApp) {
-                                val monzoAppIntent = packageManager.getLaunchIntentForPackage("co.uk.getmondo")
-                                if (monzoAppIntent != null) {
-                                    startActivity(monzoAppIntent)
-                                } else {
-                                    Toast.makeText(
-                                        ContextAmbient.current,
-                                        R.string.login_requires_sca_monzo_not_installed,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        }
-                        is LoginViewModel.State.Authenticated -> {
-                            if ((state as LoginViewModel.State.Authenticated).finish) {
-                                finish()
-                            }
-                        }
                     }
 
                     Content(
                         state = state,
                         loginClicked = { viewModel.onLoginClicked() },
-                        openMonzoApp = { viewModel.onOpenMonzoAppClicked() },
-                        loggedIn = { viewModel.onLoggedInClicked() }
+                        openMonzoApp = {
+                            val monzoAppIntent = packageManager.getLaunchIntentForPackage("co.uk.getmondo")
+                            if (monzoAppIntent != null) {
+                                startActivity(monzoAppIntent)
+                            } else {
+                                Toast.makeText(
+                                    ContextAmbient.current,
+                                    R.string.login_requires_sca_monzo_not_installed,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        loggedIn = { finish() }
                     )
                 })
             }

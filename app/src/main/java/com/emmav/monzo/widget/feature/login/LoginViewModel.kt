@@ -80,14 +80,6 @@ class LoginViewModel @AssistedInject constructor(
             .subscribe { setPreSCAAndSync() }
     }
 
-    fun onOpenMonzoAppClicked() {
-        setState { State.RequiresStrongCustomerAuthentication(openMonzoApp = true) }
-    }
-
-    fun onLoggedInClicked() {
-        setState { State.Authenticated(finish = true) }
-    }
-
     sealed class State {
         abstract val showLoading: Boolean
         abstract val actionButton: Text
@@ -151,7 +143,6 @@ class LoginViewModel @AssistedInject constructor(
             override val emoji: Text = text("🔐"),
             override val title: Text = textRes(R.string.login_requires_sca_title),
             override val subtitle: Text = textRes(R.string.login_requires_sca_subtitle),
-            val openMonzoApp: Boolean = false
         ) : State()
 
         /**
@@ -163,7 +154,6 @@ class LoginViewModel @AssistedInject constructor(
             override val emoji: Text = text("🎉"),
             override val title: Text = textRes(R.string.login_logged_in_title),
             override val subtitle: Text = textRes(R.string.login_logged_in_subtitle),
-            val finish: Boolean = false
         ) : State()
     }
 

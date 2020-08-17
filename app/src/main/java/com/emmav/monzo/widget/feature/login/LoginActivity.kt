@@ -45,19 +45,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val loggedIn = { finish() }
-        val openMonzoApp = {
-            val monzoAppIntent = packageManager.getLaunchIntentForPackage("co.uk.getmondo")
-            if (monzoAppIntent != null) {
-                startActivity(monzoAppIntent)
-            } else {
-                Toast.makeText(
-                    this,
-                    R.string.login_requires_sca_monzo_not_installed,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
         val openUrlAndFinish: (String, Color) -> Unit = { url, color ->
             openUrl(url = url, toolbarColor = color)
             finish()
@@ -76,8 +63,19 @@ class LoginActivity : AppCompatActivity() {
                     Content(
                         state = state,
                         loginClicked = { viewModel.onLoginClicked() },
-                        openMonzoApp = openMonzoApp,
-                        loggedIn = loggedIn
+                        openMonzoApp = {
+                            val monzoAppIntent = packageManager.getLaunchIntentForPackage("co.uk.getmondo")
+                            if (monzoAppIntent != null) {
+                                startActivity(monzoAppIntent)
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    R.string.login_requires_sca_monzo_not_installed,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        loggedIn = { finish() }
                     )
                 })
             }

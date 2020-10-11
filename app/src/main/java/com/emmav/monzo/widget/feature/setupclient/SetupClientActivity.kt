@@ -101,11 +101,11 @@ private fun Content(
     createClientClicked: () -> Unit,
     submitClicked: () -> Unit
 ) {
-    Stack(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
-        ScrollableColumn(modifier = Modifier.gravity(Alignment.TopCenter)) {
+    Box(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+        ScrollableColumn(modifier = Modifier.align(Alignment.TopCenter)) {
             Spacer(modifier = Modifier.preferredHeight(height = 64.dp))
             Info(
-                modifier = Modifier.gravity(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
                 emoji = state.uiState.emoji,
                 title = state.uiState.title,
                 subtitle = state.uiState.subtitle
@@ -121,7 +121,7 @@ private fun Content(
             Spacer(modifier = Modifier.height(height = 128.dp))
         }
         Actions(
-            modifier = Modifier.gravity(Alignment.BottomCenter).padding(bottom = 16.dp),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 16.dp),
             state = state,
             hasExistingClientClicked = hasExistingClientClicked,
             goToCreateClientClicked = goToCreateClientClicked,

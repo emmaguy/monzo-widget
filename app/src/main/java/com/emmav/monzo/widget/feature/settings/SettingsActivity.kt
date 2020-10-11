@@ -134,7 +134,7 @@ private fun WidgetTypes(rows: List<Row>) {
                         is Row.Widget -> {
                             Row(
                                 modifier = Modifier.fillParentMaxWidth().padding(horizontal = 16.dp),
-                                verticalGravity = Alignment.CenterVertically,
+                                verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(

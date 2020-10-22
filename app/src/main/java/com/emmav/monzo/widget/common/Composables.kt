@@ -60,6 +60,16 @@ fun EmptyState(
     }
 }
 
+@Preview(name = "light theme long copy", group = "info")
+@Composable
+fun InfoPreviewLightLongCopy() {
+    AppTheme {
+        Surface {
+            Info(modifier = Modifier, emoji = text("🙌🏽"), title = text("super incredibly long title with lots of stuff"), subtitle = text("also a mega subtitle with lots of really really really exiting words"))
+        }
+    }
+}
+
 @Preview(name = "light theme", group = "info")
 @Composable
 fun InfoPreviewLight() {

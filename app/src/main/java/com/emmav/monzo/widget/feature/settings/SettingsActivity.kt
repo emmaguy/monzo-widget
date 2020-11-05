@@ -100,7 +100,7 @@ private fun Content(
 ) {
     when {
         state.loading -> {
-            Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
+            Box(modifier = Modifier.fillMaxSize(), alignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }

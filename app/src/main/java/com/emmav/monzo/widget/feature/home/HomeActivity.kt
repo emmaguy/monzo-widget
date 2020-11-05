@@ -5,8 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.setContent
@@ -75,7 +75,7 @@ private fun Content(
 ) {
     when {
         state.loading -> {
-            Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
+            Box(modifier = Modifier.fillMaxSize(), alignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }

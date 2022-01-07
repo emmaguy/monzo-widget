@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.emmav.monzo.widget.R
@@ -46,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 Scaffold(topBar = {
-                    TopAppBar(title = { Text(LocalContext.current.getString(R.string.login_activity_title)) })
+                    TopAppBar(title = { Text(stringResource(R.string.login_activity_title)) })
                 }, content = {
                     val state by viewModel.state.observeAsState(LoginViewModel.State.Unknown())
                     (state as? LoginViewModel.State.RequestMagicLink)?.url?.let { openUrlAndFinish.invoke(it) }

@@ -57,7 +57,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
-            android:name=".feature.appwidget.WidgetProvider"
+            android:name=".feature.appwidget.BalanceWidgetProvider"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

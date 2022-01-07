@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import java.util.*
 
 @Entity(tableName = "accounts")
 data class DbAccount(
@@ -29,7 +30,7 @@ data class DbBalance(
 
 @Entity(tableName = "widgets")
 data class DbWidget(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: String,
     val type: String,
     val accountId: String?,
     val potId: String?

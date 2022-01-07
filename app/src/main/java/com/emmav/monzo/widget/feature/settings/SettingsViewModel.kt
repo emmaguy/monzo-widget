@@ -5,6 +5,7 @@ import com.emmav.monzo.widget.common.BaseViewModel
 import com.emmav.monzo.widget.common.Text
 import com.emmav.monzo.widget.common.textRes
 import com.emmav.monzo.widget.data.api.toLongAccountType
+import com.emmav.monzo.widget.data.appwidget.WidgetRepository
 import com.emmav.monzo.widget.data.auth.LoginRepository
 import com.emmav.monzo.widget.data.db.MonzoRepository
 import dagger.assisted.Assisted
@@ -15,10 +16,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 
 class SettingsViewModel @AssistedInject constructor(
-    @Assisted private val appWidgetId: Int,
-    @Assisted private val widgetTypeId: String?,
+    @Assisted("widgetId") private val widgetId: String?, // Non null if we're editing an existing widget, null if creating one
+    @Assisted("widgetTypeId") private val widgetTypeId: String?, // Same
     loginRepository: LoginRepository,
-    private val monzoRepository: MonzoRepository
+    monzoRepository: MonzoRepository,
+    private val widgetRepository: WidgetRepository,
 ) : BaseViewModel<SettingsViewModel.State>(initialState = State()) {
 
     private val accountsObservable = monzoRepository.accountsWithBalance()
@@ -64,13 +66,13 @@ class SettingsViewModel @AssistedInject constructor(
     }
 
     private fun onAccountClicked(accountId: String) {
-        disposables += monzoRepository.saveAccountWidget(accountId = accountId, id = appWidgetId)
+        disposables += widgetRepository.saveAccountWidget(accountId = accountId, id = widgetId)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setState { copy(complete = true) } }
     }
 
     private fun onPotClicked(potId: String) {
-        disposables += monzoRepository.savePotWidget(potId = potId, id = appWidgetId)
+        disposables += widgetRepository.savePotWidget(potId = potId, id = widgetId)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setState { copy(complete = true) } }
     }
@@ -84,7 +86,10 @@ class SettingsViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(appWidgetId: Int, widgetTypeId: String?): SettingsViewModel
+        fun create(
+            @Assisted("widgetId") widgetId: String?,
+            @Assisted("widgetTypeId") widgetTypeId: String?
+        ): SettingsViewModel
     }
 }
 

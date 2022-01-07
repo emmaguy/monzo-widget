@@ -40,24 +40,6 @@ class MonzoRepository @Inject constructor(
             .subscribeOn(Schedulers.io())
     }
 
-    fun saveAccountWidget(accountId: String, id: Int): Completable {
-        return Single.fromCallable {
-            val dbWidget = DbWidget(id = id, type = WidgetType.ACCOUNT_BALANCE.key, accountId = accountId, potId = null)
-            monzoStorage.saveWidget(dbWidget)
-        }
-            .ignoreElement()
-            .subscribeOn(Schedulers.io())
-    }
-
-    fun savePotWidget(potId: String, id: Int): Completable {
-        return Single.fromCallable {
-            val dbWidget = DbWidget(id = id, type = WidgetType.POT_BALANCE.key, accountId = null, potId = potId)
-            monzoStorage.saveWidget(dbWidget)
-        }
-            .ignoreElement()
-            .subscribeOn(Schedulers.io())
-    }
-
     fun accountsWithBalance(): Observable<List<DbAccountWithBalance>> {
         return monzoStorage.accountsWithBalance()
             .subscribeOn(Schedulers.io())

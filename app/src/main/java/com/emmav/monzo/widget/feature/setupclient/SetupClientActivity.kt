@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -37,7 +38,7 @@ class SetupClientActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 Scaffold(topBar = {
-                    TopAppBar(title = { Text(LocalContext.current.getString(R.string.setup_activity_title)) })
+                    TopAppBar(title = { Text(stringResource(R.string.setup_activity_title)) })
                 }, content = {
                     val state by viewModel.state.observeAsState(SetupClientViewModel.State())
                     if (state.finished) {
@@ -151,7 +152,7 @@ private fun Input(
 //            imeAction = ImeAction.Next,
             modifier = Modifier.fillMaxWidth(),
             onValueChange = { clientIdChanged(it) },
-            label = { Text(LocalContext.current.getString(R.string.setup_enter_client_id_hint)) }
+            label = { Text(stringResource(R.string.setup_enter_client_id_hint)) }
         )
         TextField(
             value = state.clientSecret,

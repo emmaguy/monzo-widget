@@ -7,7 +7,6 @@ import com.emmav.monzo.widget.common.NumberFormat.formatBalance
 import com.emmav.monzo.widget.data.appwidget.Widget
 import com.emmav.monzo.widget.data.appwidget.WidgetRepository
 import com.emmav.monzo.widget.feature.sync.SyncWorker
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
@@ -34,13 +33,13 @@ import javax.inject.Inject
     private fun Widget.toRow(): WidgetRow {
         val amount = formatBalance(currency = currency, amount = balance, showFractionalDigits = true)
 
-        return WidgetRow(title = toString(), amount = amount, appWidgetId = appWidgetId, widgetTypeId = widgetTypeId)
+        return WidgetRow(title = toString(), amount = amount, widgetId = id, widgetTypeId = widgetTypeId)
     }
 }
 
 data class WidgetRow(
     val title: String,
     val amount: String,
-    val appWidgetId: Int,
+    val widgetId: String,
     val widgetTypeId: String
 )

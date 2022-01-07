@@ -1,43 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><!-- RemoteViews supports only: https://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--
+Loading layout. At the moment, specifying a layout from the android:initialLayout in
+appwidget-provider is needed for widgets using Glance.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/widgetViewGroup"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/widgetBackgroundView"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="4dp" />
-
-    <LinearLayout
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/widgetAmountTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxLines="1"
-            tools:text="12" />
-
-        <TextView
-            android:id="@+id/widgetSubtitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textColor="#888"
-            android:textSize="10sp"
-            tools:ignore="SmallSp"
-            tools:text="name" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Loading..."
+        tools:ignore="HardcodedText" />
+</FrameLayout>

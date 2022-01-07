@@ -52,7 +52,7 @@
     <string name="settings_title_current_account">Current account</string>
     <string name="settings_header_accounts">Accounts</string>
     <string name="settings_header_pots">Pots</string>
-    <string name="settings_title_widget_type">Widget types</string>
+    <string name="settings_title_widget_type">Widget type</string>
     <string name="home_title_refresh_interval">Refresh interval</string>
     <string name="home_subtitle_refresh_interval">Refreshes data with Monzo hourly.</string>
 </resources>

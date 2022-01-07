@@ -17,7 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +27,6 @@ import com.emmav.monzo.widget.common.AppTheme
 import com.emmav.monzo.widget.common.EmptyState
 import com.emmav.monzo.widget.common.text
 import com.emmav.monzo.widget.common.textRes
-import com.emmav.monzo.widget.feature.settings.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,19 +39,20 @@ class HomeActivity : AppCompatActivity() {
         setContent {
             AppTheme {
                 Scaffold(topBar = {
-                    TopAppBar(title = { Text(LocalContext.current.getString(R.string.home_activity_title)) })
+                    TopAppBar(title = { Text(stringResource(R.string.home_activity_title)) })
                 }, content = {
                     val state by viewModel.state.observeAsState(HomeViewModel.State())
                     Content(
                         state = state,
                         onWidgetClicked = {
-                            startActivity(
-                                SettingsActivity.buildIntent(
-                                    context = this,
-                                    appWidgetId = it.appWidgetId,
-                                    widgetTypeId = it.widgetTypeId
-                                )
-                            )
+                            // TODO: Implement when we can get the widget id to edit it
+//                            startActivity(
+//                                SettingsActivity.buildIntent(
+//                                    context = this,
+//                                    widgetId = it.widgetId,
+//                                    widgetTypeId = it.widgetTypeId,
+//                                )
+//                            )
                         }
                     )
                 })
@@ -87,8 +87,8 @@ private fun Content(
         }
         else -> {
             Column {
-                Settings()
                 WidgetList(widgets = state.widgets, onWidgetClicked = onWidgetClicked)
+                Settings()
             }
         }
     }
@@ -104,7 +104,7 @@ private fun Settings() {
     ) {
         Column {
             Text(
-                text = LocalContext.current.getString(R.string.home_title_settings),
+                text = stringResource(R.string.home_title_settings),
                 style = TextStyle(fontSize = 22.sp),
                 modifier = Modifier.padding(all = 16.dp)
             )
@@ -119,12 +119,12 @@ private fun Settings() {
                         .padding(top = 16.dp)
                 ) {
                     Text(
-                        text = LocalContext.current.getString(R.string.home_title_refresh_interval),
+                        text = stringResource(R.string.home_title_refresh_interval),
                         style = TextStyle(fontSize = 20.sp),
                         modifier = Modifier.padding(horizontal = 16.dp),
                     )
                     Text(
-                        text = LocalContext.current.getString(R.string.home_subtitle_refresh_interval),
+                        text = stringResource(R.string.home_subtitle_refresh_interval),
                         style = TextStyle(
                             fontSize = 14.sp,
                             color = MaterialTheme.colors.onSecondary.copy(alpha = 0.8f)
@@ -150,7 +150,7 @@ private fun WidgetList(
     ) {
         Column {
             Text(
-                text = LocalContext.current.getString(R.string.home_title_existing_widgets),
+                text = stringResource(R.string.home_title_existing_widgets),
                 style = TextStyle(fontSize = 22.sp),
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
             )
@@ -192,7 +192,7 @@ private fun WidgetList(
 @Composable
 private fun WidgetListPreview() {
     WidgetList(
-        widgets = listOf(WidgetRow(title = "hi", amount = "£1.23", appWidgetId = 1, widgetTypeId = "id1")),
+        widgets = listOf(WidgetRow(title = "hi", amount = "£1.23", widgetId = "1", widgetTypeId = "id1")),
         onWidgetClicked = {}
     )
 }

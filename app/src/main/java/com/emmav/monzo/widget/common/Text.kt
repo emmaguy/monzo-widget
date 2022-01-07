@@ -1,6 +1,6 @@
 package com.emmav.monzo.widget.common
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 
 sealed class Text {
     data class String(val value: CharSequence) : Text()

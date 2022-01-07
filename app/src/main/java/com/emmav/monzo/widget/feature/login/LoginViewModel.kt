@@ -11,8 +11,9 @@ import com.emmav.monzo.widget.common.text
 import com.emmav.monzo.widget.common.textRes
 import com.emmav.monzo.widget.data.auth.LoginRepository
 import com.emmav.monzo.widget.feature.sync.SyncWorker
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
@@ -157,20 +158,8 @@ class LoginViewModel @AssistedInject constructor(
         ) : State()
     }
 
-    @AssistedInject.Factory
-    interface AssistedFactory {
+    @AssistedFactory
+    interface Factory {
         fun create(redirectUri: String): LoginViewModel
-    }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: AssistedFactory,
-            redirectUri: String
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return assistedFactory.create(redirectUri) as T
-            }
-        }
     }
 }

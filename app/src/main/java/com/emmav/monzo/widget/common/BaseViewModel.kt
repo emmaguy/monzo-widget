@@ -1,9 +1,9 @@
 package com.emmav.monzo.widget.common
 
+import androidx.activity.viewModels
 import androidx.annotation.MainThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.*
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseViewModel<S : Any>(initialState: S) : ViewModel() {
@@ -26,5 +26,14 @@ abstract class BaseViewModel<S : Any>(initialState: S) : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         disposables.dispose()
+    }
+}
+
+inline fun <reified T : ViewModel> AppCompatActivity.assistedViewModel(
+    crossinline viewModelProducer: (SavedStateHandle) -> T
+) = viewModels<T> {
+    object : AbstractSavedStateViewModelFactory(this, intent?.extras) {
+        override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle) =
+            viewModelProducer(handle) as T
     }
 }

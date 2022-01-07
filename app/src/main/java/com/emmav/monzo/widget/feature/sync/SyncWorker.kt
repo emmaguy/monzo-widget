@@ -2,8 +2,9 @@ package com.emmav.monzo.widget.feature.sync
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import androidx.work.RxWorker
 import androidx.work.WorkerParameters
 import com.emmav.monzo.widget.data.appwidget.WidgetRepository
@@ -14,7 +15,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class SyncWorker @WorkerInject constructor(
+@HiltWorker class SyncWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val monzoRepository: MonzoRepository,

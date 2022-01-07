@@ -1,11 +1,8 @@
 buildscript {
     ext {
-        kotlin_version = '1.4.10'
-        room_version = '2.2.5'
-        work_version = '2.4.0'
-        hilt_version = '2.28-alpha'
-        compose_version = "1.0.0-alpha04"
-        arch_lifecycle_version = "2.2.0"
+        kotlin_version = '1.6.0'
+        hilt_version = '2.38.1'
+        compose_version = "1.1.0-rc01"
     }
     repositories {
         google()

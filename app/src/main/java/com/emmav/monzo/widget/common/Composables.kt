@@ -1,18 +1,18 @@
 package com.emmav.monzo.widget.common
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import java.util.*
 
 @Composable
@@ -24,19 +24,19 @@ fun Info(
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = ContextAmbient.current.resolveText(emoji),
-            fontSize = 84.sp
+            text = LocalContext.current.resolveText(emoji),
+            fontSize = 84.sp,
         )
         Text(
-            text = ContextAmbient.current.resolveText(title),
+            text = LocalContext.current.resolveText(title),
             style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(top = 32.dp)
+            modifier = Modifier.padding(top = 32.dp),
         )
         Text(
-            text = ContextAmbient.current.resolveText(subtitle),
+            text = LocalContext.current.resolveText(subtitle),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.body2,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 16.dp),
         )
     }
 }
@@ -49,7 +49,7 @@ fun EmptyState(
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
-        alignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Info(
             modifier = Modifier.padding(16.dp),
@@ -82,7 +82,7 @@ fun InfoPreviewDark() {
 
 @Composable
 fun FullWidthButton(
-    modifier: Modifier = Modifier.padding(bottom = 16.dp),
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     title: Int,
     enabled: Boolean = true
@@ -93,7 +93,7 @@ fun FullWidthButton(
         modifier = modifier.fillMaxWidth()
     ) {
         Text(
-            text = ContextAmbient.current.getString(title).toUpperCase(Locale.getDefault()),
+            text = LocalContext.current.getString(title).uppercase(Locale.getDefault()),
             color = MaterialTheme.colors.onPrimary,
         )
     }

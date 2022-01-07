@@ -1,7 +1,5 @@
 package com.emmav.monzo.widget.feature.settings
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.emmav.monzo.widget.R
 import com.emmav.monzo.widget.common.BaseViewModel
 import com.emmav.monzo.widget.common.Text
@@ -9,11 +7,11 @@ import com.emmav.monzo.widget.common.textRes
 import com.emmav.monzo.widget.data.api.toLongAccountType
 import com.emmav.monzo.widget.data.auth.LoginRepository
 import com.emmav.monzo.widget.data.db.MonzoRepository
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.plusAssign
 
 class SettingsViewModel @AssistedInject constructor(
@@ -57,10 +55,10 @@ class SettingsViewModel @AssistedInject constructor(
 
         disposables += Observable.combineLatest(
             accountsObservable,
-            potsObservable,
-            BiFunction<List<Row>, List<Row>, List<Row>> { accounts, pots ->
-                accounts + pots
-            })
+            potsObservable
+        ) { accounts, pots ->
+            accounts + pots
+        }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { setState { copy(loading = false, rows = it) } }
     }
@@ -84,22 +82,9 @@ class SettingsViewModel @AssistedInject constructor(
         val error: Boolean = false
     )
 
-    @AssistedInject.Factory
-    interface AssistedFactory {
+    @AssistedFactory
+    interface Factory {
         fun create(appWidgetId: Int, widgetTypeId: String?): SettingsViewModel
-    }
-
-    companion object {
-        fun provideFactory(
-            assistedFactory: AssistedFactory,
-            appWidgetId: Int,
-            widgetTypeId: String?
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return assistedFactory.create(appWidgetId, widgetTypeId) as T
-            }
-        }
     }
 }
 

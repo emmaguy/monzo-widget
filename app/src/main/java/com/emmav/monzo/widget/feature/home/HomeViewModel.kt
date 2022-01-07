@@ -1,6 +1,5 @@
 package com.emmav.monzo.widget.feature.home
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.emmav.monzo.widget.common.BaseViewModel
@@ -8,10 +7,13 @@ import com.emmav.monzo.widget.common.NumberFormat.formatBalance
 import com.emmav.monzo.widget.data.appwidget.Widget
 import com.emmav.monzo.widget.data.appwidget.WidgetRepository
 import com.emmav.monzo.widget.feature.sync.SyncWorker
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
+import javax.inject.Inject
 
-class HomeViewModel @ViewModelInject constructor(
+@HiltViewModel class HomeViewModel @Inject constructor(
     workManager: WorkManager,
     widgetRepository: WidgetRepository
 ) : BaseViewModel<HomeViewModel.State>(initialState = State()) {

@@ -91,7 +91,7 @@ class WidgetProvider : AppWidgetProvider() {
                         context,
                         widgetId,
                         intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_IMMUTABLE,
                     ),
                     amount = spannableString,
                     subtitle = it.toString(),

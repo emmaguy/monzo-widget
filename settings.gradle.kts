@@ -1,23 +1,22 @@
+rootProject.name = "monzo widget"
+
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
         gradlePluginPortal()
+        google()
+        mavenCentral()
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        "13508953".let {
+            println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/")
+            maven { url = uri("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") }
+        }
+
         google()
         mavenCentral()
     }
 }
-
-rootProject.name = "monzo widget"
 include(":app")

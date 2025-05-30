@@ -8,12 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
+import com.emmav.monzowidget.ui.theme.MonzoWidgetTheme
 
 class MainActivity : ComponentActivity() {
     private val repository by lazy {
@@ -39,6 +45,7 @@ class MainActivity : ComponentActivity() {
     private val loginViewModel by lazy {
         LoginViewModel(
             sessionRepository = repository,
+            sessionPreferences = SessionPreferences(App.instance.applicationContext),
             clientId = BuildConfig.MONZO_CLIENT_ID,
             clientSecret = BuildConfig.MONZO_CLIENT_SECRET,
             redirectUri = getString(R.string.callback_scheme) + "://" + getString(R.string.callback_host),
@@ -52,13 +59,16 @@ class MainActivity : ComponentActivity() {
 
         handleIntent()
         setContent {
-            val backStack = remember { mutableStateListOf<StartupUiState>(StartupUiState.Unknown) }
-            StartupScreen(viewModel = startupViewModel, backStack = backStack)
+            MonzoWidgetTheme {
+                val backStack = remember {
+                    mutableStateListOf<StartupUiState>(StartupUiState.Unknown)
+                }
+                StartupScreen(viewModel = startupViewModel, backStack = backStack)
+            }
         }
     }
 
     private fun handleIntent() {
-        // TODO When handling the intent, show ui
         intent?.data?.let { uri ->
             val code = uri.getQueryParameter("code")
             val state = uri.getQueryParameter("state")
@@ -81,27 +91,88 @@ class MainActivity : ComponentActivity() {
             entryProvider = { key ->
                 when (uiState) {
                     StartupUiState.HasAuth -> NavEntry(key) {
-                        Text("haz auth token")
+                        HomeScreen()
                     }
 
                     StartupUiState.RequiresAuth -> NavEntry(key) {
-                        Column(modifier = Modifier.padding(top = 32.dp)) {
-                            Text("Requires auth")
-                            Button(onClick = {
-                                backStack.add(StartupUiState.HasAuth)
-                                loginViewModel.onStartAuth(this@MainActivity)
-                            }) {
-                                Text("Click to navigate")
-                            }
-                        }
+                        LoginScreen(backStack)
                     }
 
                     is StartupUiState.Unknown -> NavEntry(key) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator()
-                        }
+                        LoadingScreen()
                     }
                 }
             })
+    }
+
+    @Composable
+    private fun HomeScreen() {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            contentWindowInsets = WindowInsets.systemBars,
+            topBar = {
+                TopAppBar(
+                    title = { Text("Monzo widget II") },
+                    modifier = Modifier.statusBarsPadding()
+                )
+            }
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+            ) {
+                Column(Modifier.padding(horizontal = 16.dp)) {
+                    Text("haz auth token")
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun LoginScreen(backStack: SnapshotStateList<StartupUiState>) {
+        val uiState by loginViewModel.uiState.collectAsState()
+        when (uiState) {
+            is LoginViewModel.LoginUiState.Idle -> {
+                Column(modifier = Modifier.padding(top = 32.dp)) {
+                    Text("Requires auth")
+                    Button(onClick = {
+                        loginViewModel.onStartAuth(this@MainActivity)
+                    }) {
+                        Text("Click to navigate")
+                    }
+                }
+            }
+
+            is LoginViewModel.LoginUiState.Loading -> {
+                LoadingScreen()
+            }
+
+            is LoginViewModel.LoginUiState.Error -> {
+                Column(modifier = Modifier.padding(top = 32.dp)) {
+                    Text("Error: ${(uiState as LoginViewModel.LoginUiState.Error).message}")
+                    Button(onClick = {
+                        loginViewModel.onStartAuth(this@MainActivity)
+                    }) {
+                        Text("Click to navigate")
+                    }
+                }
+            }
+
+            is LoginViewModel.LoginUiState.Success -> {
+                backStack.clear()
+                backStack.add(StartupUiState.HasAuth)
+            }
+        }
+    }
+
+    @Composable
+    private fun LoadingScreen() {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }

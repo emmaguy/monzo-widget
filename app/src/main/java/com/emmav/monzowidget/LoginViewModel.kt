@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
+/**
+ * Implements OAuth 2.0 login flow for Monzo, as described here:
+ * https://docs.monzo.com/#acquire-an-access-token
+ */
 class LoginViewModel(
     private val sessionRepository: SessionRepository,
     private val sessionPreferences: SessionPreferences,
@@ -24,7 +28,6 @@ class LoginViewModel(
         sessionPreferences.stateToken = UUID.randomUUID().toString()
 
         // 1. Redirect the user to Monzo to authorise your app
-        //  https://docs.monzo.com/#acquire-an-access-token
         val uri = Uri.Builder()
             .scheme("https")
             .authority("auth.monzo.com")

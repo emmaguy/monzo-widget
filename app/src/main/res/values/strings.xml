@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">monzo widget</string>
+
+    <!-- OAuth callback scheme and host -->
+    <string name="callback_scheme">https</string>
+    <string name="callback_host">monzowidgetcallback</string>
 </resources>

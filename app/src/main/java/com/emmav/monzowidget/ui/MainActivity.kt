@@ -34,23 +34,25 @@ import com.emmav.monzowidget.App
 import com.emmav.monzowidget.BuildConfig
 import com.emmav.monzowidget.R
 import com.emmav.monzowidget.data.DataModule
+import com.emmav.monzowidget.data.monzo.MonzoRepository
 import com.emmav.monzowidget.data.session.AuthStorage
 import com.emmav.monzowidget.data.session.SessionRepository
 import com.emmav.monzowidget.ui.LoginViewModel.LoginUiState
 import com.emmav.monzowidget.ui.theme.MonzoWidgetTheme
 
 class MainActivity : ComponentActivity() {
+    private val db = DataModule.createDb(
+        context = App.Companion.instance.applicationContext,
+    )
+    private val monzoApi = DataModule.create(
+        context = App.Companion.instance.applicationContext,
+        sessionStorage = db.authStorage(),
+        baseUrl = "https://api.monzo.com",
+    )
+
     private val repository by lazy {
-        val context = App.Companion.instance.applicationContext
-        val db = DataModule.createDb(
-            context = context,
-        )
         SessionRepository(
-            api = DataModule.create(
-                context = context,
-                sessionStorage = db.authStorage(),
-                baseUrl = "https://api.monzo.com",
-            ),
+            api = monzoApi,
             db = db.authStorage(),
         )
     }
@@ -61,6 +63,17 @@ class MainActivity : ComponentActivity() {
             clientId = BuildConfig.MONZO_CLIENT_ID,
             clientSecret = BuildConfig.MONZO_CLIENT_SECRET,
             redirectUri = getString(R.string.callback_scheme) + "://" + getString(R.string.callback_host),
+        )
+    }
+    private val monzoRepository by lazy {
+        MonzoRepository(
+            monzoApi = monzoApi,
+            monzoStorage = db.monzoStorage(),
+        )
+    }
+    private val homeViewModel by lazy {
+        HomeViewModel(
+            monzoRepository = monzoRepository,
         )
     }
 
@@ -118,7 +131,8 @@ class MainActivity : ComponentActivity() {
                     LoginUiState.LoginFinished -> NavEntry(key) {
                         backStack.clear()
                         backStack.add(AppScreens.Home)
-                        HomeScreen()
+                        val uiState by homeViewModel.uiState.collectAsState()
+                        HomeScreen(uiState)
                     }
 
                     is LoginUiState.Error -> NavEntry(key) {
@@ -132,7 +146,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun HomeScreen() {
+    private fun HomeScreen(uiState: HomeViewModel.HomeUiState) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             contentWindowInsets = WindowInsets.systemBars,
@@ -149,7 +163,29 @@ class MainActivity : ComponentActivity() {
                     .fillMaxSize()
             ) {
                 Column(Modifier.padding(horizontal = 16.dp)) {
-                    Text("haz auth token")
+                    when (uiState) {
+                        HomeViewModel.HomeUiState.Loading -> LoadingScreen()
+                        is HomeViewModel.HomeUiState.Loaded -> {
+                            val accounts = uiState.accounts
+                            if (accounts.isEmpty()) {
+                                Text("No accounts found")
+                            } else {
+                                accounts.forEach { account ->
+                                    Text(text = "${account.emoji} ${account.ownerType}-${account.productType}: ${account.balance}")
+                                    account.pots.forEach { pot ->
+                                        Text(
+                                            text = " Pot: ${pot.name}: ${pot.balance}",
+                                            modifier = Modifier.padding(start = 8.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        is HomeViewModel.HomeUiState.Error -> {
+                            Text(text = "Error: ${uiState.message}")
+                        }
+                    }
                 }
             }
         }

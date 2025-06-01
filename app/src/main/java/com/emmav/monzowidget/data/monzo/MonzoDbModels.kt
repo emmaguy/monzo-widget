@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "accounts")
 data class DbAccount(
     @PrimaryKey val id: String,
-    val type: String
+    val ownerType: String,
+    val productType: String,
+    val countryCodeAlpha2: String,
 )
 
 @Entity(tableName = "pots")

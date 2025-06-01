@@ -6,8 +6,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.emmav.monzo.widget.data.db.MonzoStorage
 import com.emmav.monzowidget.BuildConfig
 import com.emmav.monzowidget.api.MonzoApi
+import com.emmav.monzowidget.data.monzo.DbAccount
+import com.emmav.monzowidget.data.monzo.DbBalance
+import com.emmav.monzowidget.data.monzo.DbPot
 import com.emmav.monzowidget.data.session.DbSession
 import com.emmav.monzowidget.data.session.SessionStorage
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -123,11 +127,22 @@ object DataModule {
             context = context,
             klass = AppDatabase::class.java,
             name = "app-database",
-        ).build()
+        ).fallbackToDestructiveMigration(dropAllTables = false)
+            .build()
     }
 
-    @Database(entities = [DbSession::class], version = 1)
+    @Database(
+        entities = [
+            // Session
+            DbSession::class,
+            // Monzo API entities
+            DbAccount::class,
+            DbBalance::class,
+            DbPot::class,
+        ], version = 3
+    )
     abstract class AppDatabase : RoomDatabase() {
         abstract fun authStorage(): SessionStorage
+        abstract fun monzoStorage(): MonzoStorage
     }
 }

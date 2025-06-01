@@ -8,13 +8,14 @@ import androidx.room.Transaction
 import com.emmav.monzowidget.data.monzo.DbAccount
 import com.emmav.monzowidget.data.monzo.DbBalance
 import com.emmav.monzowidget.data.monzo.DbPot
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MonzoStorage {
 
     @Transaction
     @Query("SELECT * FROM accounts")
-    suspend fun accounts(): List<DbAccount>
+    fun accounts(): Flow<List<DbAccount>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveAccounts(accounts: List<DbAccount>)

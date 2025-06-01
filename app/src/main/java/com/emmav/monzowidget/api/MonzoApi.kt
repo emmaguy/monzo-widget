@@ -34,7 +34,7 @@ interface MonzoApi {
     suspend fun accounts(): Response<AccountsResponse>
 
     @GET("balance")
-    suspend fun balance(@Query("account_id") accountId: String): Response<BalanceResponse>
+    suspend fun balance(@Query("account_id") accountId: String): Response<ApiBalance>
 
     @GET("pots")
     suspend fun pots(@Query("current_account_id") accountId: String): Response<PotsResponse>
@@ -55,11 +55,14 @@ data class AccountsResponse(val accounts: List<ApiAccount>)
 @Serializable
 data class ApiAccount(
     val id: String,
-    val type: String
+    val closed: Boolean,
+    @SerialName("product_type") val productType: String,
+    @SerialName("owner_type") val ownerType: String,
+    @SerialName("country_code") val countryCode: String,
 )
 
 @Serializable
-data class BalanceResponse(
+data class ApiBalance(
     val balance: Long,
     val currency: String
 )

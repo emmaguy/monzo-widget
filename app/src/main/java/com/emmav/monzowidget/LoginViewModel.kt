@@ -16,16 +16,38 @@ import java.util.UUID
  */
 class LoginViewModel(
     private val sessionRepository: SessionRepository,
-    private val sessionPreferences: SessionPreferences,
+    private val authStorage: AuthStorage,
     private val clientId: String,
     private val clientSecret: String,
     private val redirectUri: String,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
+    private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Loading)
     val uiState: StateFlow<LoginUiState> = _uiState
 
+    init {
+        viewModelScope.launch {
+            val session = sessionRepository.getSession()
+            if (session == null) {
+                _uiState.value = LoginUiState.RequiresAuth(hasSession = false, hasSCA = false)
+            } else {
+                checkIfSCARequired()
+            }
+        }
+    }
+
+    fun checkIfSCARequired() {
+        viewModelScope.launch {
+            val authResult = sessionRepository.testAuthentication()
+            if (authResult.isFailure) {
+                _uiState.value = LoginUiState.RequiresAuth(hasSession = true, hasSCA = false)
+            } else {
+                _uiState.value = LoginUiState.LoginFinished
+            }
+        }
+    }
+
     fun onStartAuth(context: Context) {
-        sessionPreferences.stateToken = UUID.randomUUID().toString()
+        authStorage.stateToken = UUID.randomUUID().toString()
 
         // 1. Redirect the user to Monzo to authorise your app
         val uri = Uri.Builder()
@@ -34,7 +56,7 @@ class LoginViewModel(
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("redirect_uri", redirectUri)
             .appendQueryParameter("response_type", "code")
-            .appendQueryParameter("state", sessionPreferences.stateToken)
+            .appendQueryParameter("state", authStorage.stateToken)
             .build()
         val customTabsIntent = CustomTabsIntent.Builder()
             .setShowTitle(true)
@@ -46,11 +68,11 @@ class LoginViewModel(
         _uiState.value = LoginUiState.Loading
 
         // 2. Monzo redirects the user back to your app with an authorization code (via [MainActivity.onCreate()])
-        if (state != sessionPreferences.stateToken) {
-            sessionPreferences.stateToken = "" // Clear the token to prevent getting stuck
+        if (state != authStorage.stateToken) {
+            authStorage.stateToken = "" // Clear the token to prevent getting stuck
             _uiState.value = LoginUiState.Error("Invalid state token")
         } else {
-            sessionPreferences.stateToken = "" // Clear the state token after use
+            authStorage.stateToken = "" // Clear the state token after use
 
             viewModelScope.launch {
                 // 3. Exchange the authorization code for an access token.
@@ -60,7 +82,7 @@ class LoginViewModel(
                     authorizationCode = code,
                     redirectUri = redirectUri,
                 ).onSuccess {
-                    _uiState.value = LoginUiState.Success
+                    checkIfSCARequired()
                 }.onFailure {
                     _uiState.value = LoginUiState.Error(
                         "Failed to exchange code for token: ${it.message ?: "unknown error"}"
@@ -71,9 +93,9 @@ class LoginViewModel(
     }
 
     sealed class LoginUiState {
-        data object Idle : LoginUiState()
         data object Loading : LoginUiState()
+        data class RequiresAuth(val hasSession: Boolean, val hasSCA: Boolean) : LoginUiState()
         data class Error(val message: String) : LoginUiState()
-        data object Success : LoginUiState()
+        data object LoginFinished : LoginUiState()
     }
 }

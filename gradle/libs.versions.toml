@@ -20,6 +20,7 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 browser = "1.8.0"
 room = "2.7.1"
+chucker = "4.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +57,9 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
+chucker-debug = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "chucker" }
+chucker-release = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "chucker" }
+
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -65,5 +69,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = "com.google.devtools.ksp:2.0.21-1.0.26"
-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization"}
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
 

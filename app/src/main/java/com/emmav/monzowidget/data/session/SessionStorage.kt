@@ -1,4 +1,4 @@
-package com.emmav.monzowidget.db
+package com.emmav.monzowidget.data.session
 
 import androidx.room.Dao
 import androidx.room.Entity
@@ -11,17 +11,17 @@ import androidx.room.Query
 interface SessionStorage {
 
     @Query("SELECT * FROM oauth_session LIMIT 1")
-    suspend fun getSession(): OAuthSessionEntity?
+    suspend fun getSession(): DbSession?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveSession(session: OAuthSessionEntity)
+    suspend fun saveSession(session: DbSession)
 
     @Query("DELETE FROM oauth_session")
     suspend fun clearSession()
 }
 
 @Entity(tableName = "oauth_session")
-data class OAuthSessionEntity(
+data class DbSession(
     @PrimaryKey val id: Int = 0, // Singleton session (id = 0)
     val accessToken: String,
     val refreshToken: String,

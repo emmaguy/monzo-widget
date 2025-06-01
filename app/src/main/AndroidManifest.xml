@@ -16,7 +16,7 @@
         android:theme="@style/Theme.MonzoWidget">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MonzoWidget">
 
@@ -29,9 +29,13 @@
             <!-- OAuth callback intent -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/callback_scheme" android:host="@string/callback_host" />
+
+                <data
+                    android:scheme="@string/callback_scheme"
+                    android:host="@string/callback_host" />
             </intent-filter>
 
         </activity>

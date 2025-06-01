@@ -1,10 +1,12 @@
-package com.emmav.monzowidget
+package com.emmav.monzowidget.ui
 
 import android.content.Context
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.emmav.monzowidget.data.session.AuthStorage
+import com.emmav.monzowidget.data.session.SessionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -12,7 +14,9 @@ import java.util.UUID
 
 /**
  * Implements OAuth 2.0 login flow for Monzo, as described here:
- * https://docs.monzo.com/#acquire-an-access-token
+ * https://docs.monzo.com/#acquire-an-access-token.
+ *
+ * Used on app process start to send the user to the right screen.
  */
 class LoginViewModel(
     private val sessionRepository: SessionRepository,

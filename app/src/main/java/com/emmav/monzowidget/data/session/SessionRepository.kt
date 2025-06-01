@@ -1,9 +1,7 @@
-package com.emmav.monzowidget
+package com.emmav.monzowidget.data.session
 
 import com.emmav.monzowidget.api.MonzoApi
 import com.emmav.monzowidget.api.TokenResponse
-import com.emmav.monzowidget.db.OAuthSessionEntity
-import com.emmav.monzowidget.db.SessionStorage
 
 class SessionRepository(
     private val api: MonzoApi,
@@ -48,7 +46,7 @@ class SessionRepository(
             if (response.isSuccessful) {
                 response.body()?.let {
                     db.saveSession(
-                        session = OAuthSessionEntity(
+                        session = DbSession(
                             accessToken = it.accessToken,
                             refreshToken = it.refreshToken,
                         )
@@ -63,7 +61,7 @@ class SessionRepository(
         }
     }
 
-    suspend fun getSession(): OAuthSessionEntity? {
+    suspend fun getSession(): DbSession? {
         return db.getSession()
     }
 }

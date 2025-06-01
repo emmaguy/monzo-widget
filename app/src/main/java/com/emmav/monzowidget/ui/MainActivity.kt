@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.emmav.monzowidget
+package com.emmav.monzowidget.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,12 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import com.emmav.monzowidget.LoginViewModel.LoginUiState
+import com.emmav.monzowidget.App
+import com.emmav.monzowidget.BuildConfig
+import com.emmav.monzowidget.R
+import com.emmav.monzowidget.data.DataModule
+import com.emmav.monzowidget.data.session.AuthStorage
+import com.emmav.monzowidget.data.session.SessionRepository
+import com.emmav.monzowidget.ui.LoginViewModel.LoginUiState
 import com.emmav.monzowidget.ui.theme.MonzoWidgetTheme
 
 class MainActivity : ComponentActivity() {
     private val repository by lazy {
-        val context = App.instance.applicationContext
+        val context = App.Companion.instance.applicationContext
         val db = DataModule.createDb(
             context = context,
         )
@@ -51,7 +57,7 @@ class MainActivity : ComponentActivity() {
     private val loginViewModel by lazy {
         LoginViewModel(
             sessionRepository = repository,
-            authStorage = AuthStorage(App.instance.applicationContext),
+            authStorage = AuthStorage(App.Companion.instance.applicationContext),
             clientId = BuildConfig.MONZO_CLIENT_ID,
             clientSecret = BuildConfig.MONZO_CLIENT_SECRET,
             redirectUri = getString(R.string.callback_scheme) + "://" + getString(R.string.callback_host),

@@ -1,4 +1,4 @@
-package com.emmav.monzowidget
+package com.emmav.monzowidget.data.session
 
 import android.content.Context
 import androidx.core.content.edit

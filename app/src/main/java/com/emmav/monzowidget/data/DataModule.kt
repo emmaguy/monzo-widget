@@ -1,4 +1,4 @@
-package com.emmav.monzowidget
+package com.emmav.monzowidget.data
 
 import android.content.Context
 import android.util.Log
@@ -6,9 +6,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.emmav.monzowidget.BuildConfig
 import com.emmav.monzowidget.api.MonzoApi
-import com.emmav.monzowidget.db.OAuthSessionEntity
-import com.emmav.monzowidget.db.SessionStorage
+import com.emmav.monzowidget.data.session.DbSession
+import com.emmav.monzowidget.data.session.SessionStorage
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -98,7 +99,7 @@ object DataModule {
                         if (result.code() == 200) {
                             val tokenResponse = result.body()!!
                             sessionStorage.saveSession(
-                                session = OAuthSessionEntity(
+                                session = DbSession(
                                     accessToken = tokenResponse.accessToken,
                                     refreshToken = tokenResponse.refreshToken,
                                 )
@@ -125,7 +126,7 @@ object DataModule {
         ).build()
     }
 
-    @Database(entities = [OAuthSessionEntity::class], version = 1)
+    @Database(entities = [DbSession::class], version = 1)
     abstract class AppDatabase : RoomDatabase() {
         abstract fun authStorage(): SessionStorage
     }

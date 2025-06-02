@@ -1,31 +1,29 @@
 package com.emmav.monzowidget.data.monzo
 
 import java.math.BigDecimal
-import java.text.NumberFormat
-import java.util.Currency
 
 data class Account(
     val id: String,
     val ownerType: String,
     val productType: String,
     val emoji: String,
-    val balance: String? = null,
+    val balance: Balance? = null,
     val pots: List<Pot>
 )
 
-data class Balance(val currency: String, val amount: Long)
+data class Balance(val currencyCode: String, val amount: BigDecimal)
 
 data class Pot(
     val id: String,
     val accountId: String,
     val name: String,
-    val balance: String? = null,
+    val balance: Balance? = null,
 )
 
 internal fun DbBalance.toBalance(): Balance {
     return Balance(
-        currency = currency,
-        amount = balance,
+        currencyCode = currency,
+        amount = amountToBigDecimal(balance) ?: BigDecimal.ZERO,
     )
 }
 
@@ -34,7 +32,7 @@ internal fun DbPot.toPot(): Pot {
         id = id,
         accountId = accountId,
         name = name,
-        balance = formatBalance(currency, balance),
+        balance = amountToBigDecimal(balance)?.let { Balance(currency, it) }
     )
 }
 
@@ -44,23 +42,14 @@ internal fun DbAccount.toAccount(pots: List<Pot>, balance: Balance?): Account {
         ownerType = ownerType,
         productType = productType,
         emoji = countryCodeToEmojiFlag(countryCodeAlpha2),
-        balance = if (balance != null) {
-            formatBalance(balance.currency, balance.amount)
-        } else {
-            null
-        },
+        balance = balance,
         pots = pots,
     )
 }
 
-private fun formatBalance(curr: String, amount: Long): String {
-    return NumberFormat.getCurrencyInstance()
-        .apply {
-            currency = Currency.getInstance(curr)
-        }
-        .format(BigDecimal.valueOf(amount, 2))
+private fun amountToBigDecimal(amount: Long): BigDecimal? {
+    return BigDecimal.valueOf(amount, 2)
 }
-
 
 private fun countryCodeToEmojiFlag(countryCode: String): String {
     return countryCode

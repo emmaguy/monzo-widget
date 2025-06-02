@@ -35,47 +35,26 @@ import androidx.navigation3.ui.NavDisplay
 import com.emmav.monzowidget.App
 import com.emmav.monzowidget.BuildConfig
 import com.emmav.monzowidget.R
-import com.emmav.monzowidget.data.DataModule
-import com.emmav.monzowidget.data.monzo.MonzoRepository
 import com.emmav.monzowidget.data.session.AuthStorage
-import com.emmav.monzowidget.data.session.SessionRepository
 import com.emmav.monzowidget.ui.LoginViewModel.LoginUiState
+import com.emmav.monzowidget.ui.Utils.formatBalance
+import com.emmav.monzowidget.ui.Utils.title
 import com.emmav.monzowidget.ui.theme.MonzoWidgetTheme
 
 class MainActivity : ComponentActivity() {
-    private val db = DataModule.createDb(
-        context = App.Companion.instance.applicationContext,
-    )
-    private val monzoApi = DataModule.create(
-        context = App.Companion.instance.applicationContext,
-        sessionStorage = db.authStorage(),
-        baseUrl = "https://api.monzo.com",
-    )
 
-    private val repository by lazy {
-        SessionRepository(
-            api = monzoApi,
-            db = db.authStorage(),
-        )
-    }
     private val loginViewModel by lazy {
         LoginViewModel(
-            sessionRepository = repository,
+            sessionRepository = App.Companion.instance.sessionRepository,
             authStorage = AuthStorage(App.Companion.instance.applicationContext),
             clientId = BuildConfig.MONZO_CLIENT_ID,
             clientSecret = BuildConfig.MONZO_CLIENT_SECRET,
             redirectUri = getString(R.string.callback_scheme) + "://" + getString(R.string.callback_host),
         )
     }
-    private val monzoRepository by lazy {
-        MonzoRepository(
-            api = monzoApi,
-            storage = db.monzoStorage(),
-        )
-    }
     private val homeViewModel by lazy {
         HomeViewModel(
-            monzoRepository = monzoRepository,
+            monzoRepository = App.Companion.instance.monzoRepository,
         )
     }
 
@@ -178,10 +157,12 @@ class MainActivity : ComponentActivity() {
                                 Text("No accounts found")
                             } else {
                                 accounts.forEach { account ->
-                                    Text(text = "${account.emoji} ${account.ownerType}-${account.productType}: ${account.balance}")
+                                    Text(
+                                        text = "${account.emoji} ${account.title()}: ${account.balance?.formatBalance()}"
+                                    )
                                     account.pots.forEach { pot ->
                                         Text(
-                                            text = " Pot: ${pot.name}: ${pot.balance}",
+                                            text = " 🍯 ${pot.name}: ${pot.balance?.formatBalance()}",
                                             modifier = Modifier.padding(start = 8.dp)
                                         )
                                     }

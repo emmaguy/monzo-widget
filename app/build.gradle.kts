@@ -64,6 +64,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    implementation(libs.glance.appwidget)
+    implementation(libs.glance.material3)
+
     debugImplementation(libs.chucker.debug)
     releaseImplementation(libs.chucker.release)
 

@@ -27,7 +27,7 @@ class HomeViewModel(
         }
 
         viewModelScope.launch {
-            monzoRepository.accounts()
+            monzoRepository.accountsWithPots()
                 .collectLatest { accounts ->
                     _uiState.value = HomeUiState.Loaded(accounts = accounts)
                 }

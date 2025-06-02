@@ -1,7 +1,7 @@
 package com.emmav.monzowidget.data.session
 
-import com.emmav.monzowidget.api.MonzoApi
-import com.emmav.monzowidget.api.TokenResponse
+import com.emmav.monzowidget.data.api.MonzoApi
+import com.emmav.monzowidget.data.api.TokenResponse
 
 class SessionRepository(
     private val api: MonzoApi,

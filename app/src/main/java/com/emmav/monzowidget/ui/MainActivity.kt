@@ -67,8 +67,8 @@ class MainActivity : ComponentActivity() {
     }
     private val monzoRepository by lazy {
         MonzoRepository(
-            monzoApi = monzoApi,
-            monzoStorage = db.monzoStorage(),
+            api = monzoApi,
+            storage = db.monzoStorage(),
         )
     }
     private val homeViewModel by lazy {

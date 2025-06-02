@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.emmav.monzo.widget.data.db.MonzoStorage
 import com.emmav.monzowidget.BuildConfig
-import com.emmav.monzowidget.api.MonzoApi
+import com.emmav.monzowidget.data.api.MonzoApi
 import com.emmav.monzowidget.data.monzo.DbAccount
 import com.emmav.monzowidget.data.monzo.DbBalance
 import com.emmav.monzowidget.data.monzo.DbPot

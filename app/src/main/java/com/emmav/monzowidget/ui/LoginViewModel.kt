@@ -86,6 +86,8 @@ class LoginViewModel(
                     authorizationCode = code,
                     redirectUri = redirectUri,
                 ).onSuccess {
+                    // We need the user to complete SCA in the official Monzo app before we can
+                    // do much with this token.
                     checkIfSCARequired()
                 }.onFailure {
                     _uiState.value = LoginUiState.Error(
@@ -94,6 +96,10 @@ class LoginViewModel(
                 }
             }
         }
+    }
+
+    fun onResume() {
+        checkIfSCARequired()
     }
 
     sealed class LoginUiState {

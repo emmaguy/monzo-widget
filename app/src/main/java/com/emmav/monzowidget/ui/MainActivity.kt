@@ -28,6 +28,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.emmav.monzowidget.App
@@ -82,6 +84,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         handleIntent()
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onResume(owner: LifecycleOwner) {
+                loginViewModel.onResume()
+            }
+        })
         setContent {
             MonzoWidgetTheme {
                 val backStack = remember {
@@ -119,7 +126,7 @@ class MainActivity : ComponentActivity() {
 
                     is LoginUiState.RequiresAuth -> NavEntry(key) {
                         Column(modifier = Modifier.padding(top = 32.dp)) {
-                            Text("Requires auth")
+                            Text("Requires auth $uiState")
                             Button(onClick = {
                                 loginViewModel.onStartAuth(this@MainActivity)
                             }) {

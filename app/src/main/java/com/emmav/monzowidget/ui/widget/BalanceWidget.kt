@@ -47,7 +47,7 @@ class BalanceWidget : GlanceAppWidget() {
             BalanceContent(
                 currencySymbol = currencySymbol,
                 balance = balance ?: "0.00",
-                emoji = account.emoji,
+                emoji = account.countryCodeEmoji,
                 accountName = account.title(),
             )
         }

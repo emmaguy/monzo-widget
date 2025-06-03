@@ -15,10 +15,11 @@ object Utils {
     }
 
     fun Account.title(): String {
-        if (productType == "standard") {
-            return ownerType // personal or joint
+        val title = if (productType == "standard") {
+            ownerType // e.g. personal or joint
+        } else {
+            productType
         }
-
-        return productType
+        return title.replaceFirstChar { it.uppercaseChar() }
     }
 }

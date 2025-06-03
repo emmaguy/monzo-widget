@@ -6,7 +6,7 @@ data class Account(
     val id: String,
     val ownerType: String,
     val productType: String,
-    val emoji: String,
+    val countryCodeEmoji: String,
     val balance: Balance? = null,
     val pots: List<Pot>
 )
@@ -41,7 +41,7 @@ internal fun DbAccount.toAccount(pots: List<Pot>, balance: Balance?): Account {
         id = id,
         ownerType = ownerType,
         productType = productType,
-        emoji = countryCodeToEmojiFlag(countryCodeAlpha2),
+        countryCodeEmoji = countryCodeToEmojiFlag(countryCodeAlpha2),
         balance = balance,
         pots = pots,
     )
